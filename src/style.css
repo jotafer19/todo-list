@@ -1,0 +1,80 @@
+:root {
+    --general-padding: 30px;
+    --gap-padding: 16px;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* ------- HEADER ------- */
+
+#header {
+    min-height: 10svh;
+}
+
+/* ------- SIDE-BAR ------- */
+
+#main-container {
+    min-height: 90svh;
+    background-color: aqua;
+    display: flex;
+}
+
+#side-bar {
+    padding: var(--general-padding);
+    min-width: 220px;
+    max-width: 300px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background-color: beige;
+}
+
+.side-bar-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-padding);
+}
+
+#projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-padding);
+}
+
+/* ------- TASKS DISPLAY ------- */
+
+#tasks-display {
+    flex: 1;
+    padding: var(--general-padding);
+}
+
+#tasks-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-padding);
+}
+
+.task {
+    border: 1px solid black;
+    padding: 8px 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-general-info {
+    cursor: pointer;
+}
+
+
+.task > .task-additional-info.collapse {
+    display: none;
+}
+
+.task > .task-additional-info.expand {
+    display: block;
+}
