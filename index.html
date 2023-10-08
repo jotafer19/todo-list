@@ -13,15 +13,16 @@
       <nav id="side-bar">
         <div class="side-bar-container" id="home-container">
           Home
-          <ul>
-            <li class="home-options">All Tasks</li>
-            <li class="home-options">Today</li>
-            <li class="home-options">Next Week</li>
-          </ul>
+            <div class="side-bar-options home">All Tasks</div>
+            <div class="side-bar-options home">Today</div>
+            <div class="side-bar-options home">This Week</div>
         </div>
-        <div class="side-bar-container" id="projects-container">Projects</div>
+        <div class="side-bar-container" id="projects-container">
+          Projects
+          <div id="projects-list"></div>
+        </div>
       </nav>
-      <div id="projects-display"></div>
+      <div id="tasks-display"></div>
     </main>
   </body>
 </html>
