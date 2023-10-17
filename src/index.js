@@ -122,13 +122,51 @@ submitNewTaskButton.addEventListener("click", (event) => {
 
 // DELETE TASK
 tasksDisplay.addEventListener("click", event => {
-    if (event.target.classList = "delete-icon task-icon") {
+    if (event.target.classList.contains("delete-icon")) {
         const targetedTask = event.target.parentElement.parentElement.parentElement;
         for (let task of inbox.showTasks) {
             if (task.id === targetedTask.getAttribute("id")) {
                 inbox.deleteTask(task);
-                targetedTask.remove()
+                targetedTask.remove();
+                console.log("Task deleted")
             }
+        }
+    }
+})
+
+// EDIT TASK
+tasksDisplay.addEventListener("click", event => {
+    if (event.target.classList.contains("edit-icon")) {
+        const targetedTask = event.target.parentElement.parentElement.parentElement;
+        for (let task of inbox.showTasks) {
+            if (task.id === targetedTask.getAttribute("id")) {
+                targetedTask.classList.toggle("editing-task");
+                console.log(task.name, task.id)
+                console.log(targetedTask)
+                const editDialog = document.querySelector("#edit-task-dialog");
+                editDialog.showModal();
+                document.querySelector("#edit-task-name").value = task.name;
+                document.querySelector("#edit-task-description").value = task.description;
+                document.querySelector("#edit-task-date").value = task.date;
+                document.querySelector("#edit-task-priority").value = task.priority;
+            }
+        }
+    }
+})
+
+const editTaskSubmitButton = document.querySelector("#edit-task-submit");
+editTaskSubmitButton.addEventListener("click", event => {
+    event.preventDefault();
+    const targetedTask = document.querySelector(".editing-task");
+    for (let task of inbox.showTasks) {
+        if (task.id === targetedTask.getAttribute("id")) {
+            task.name = document.querySelector("#edit-task-name").value;
+            task.description = document.querySelector("#edit-task-description").value;
+            task.date = document.querySelector("#edit-task-date").value;
+            task.priority = document.querySelector("#edit-task-priority").value;
+            const newTaskDiv = createTaskDiv(task);
+            tasksDisplay.replaceChild(newTaskDiv, targetedTask);
+            document.querySelector("edit-task-dialog").close()
         }
     }
 })
