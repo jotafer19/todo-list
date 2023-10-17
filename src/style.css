@@ -1,6 +1,7 @@
 :root {
     --general-padding: 30px;
-    --gap-padding: 16px;
+    --sidebar-gap: 10px;
+    --task-padding: 6px 16px;
 }
 
 * {
@@ -9,72 +10,136 @@
     box-sizing: border-box;
 }
 
+body {
+    position: relative;
+}
+
 /* ------- HEADER ------- */
 
 #header {
     min-height: 10svh;
+    background-color: antiquewhite;
 }
 
-/* ------- SIDE-BAR ------- */
+/* ------- MAIN ------- */
 
 #main-container {
     min-height: 90svh;
-    background-color: aqua;
     display: flex;
 }
+
+/* ------- SIDEBAR ------- */
 
 #side-bar {
-    padding: var(--general-padding);
-    min-width: 220px;
+    min-width: 250px;
     max-width: 300px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    background-color: beige;
-}
-
-.side-bar-container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-padding);
-}
-
-#projects-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-padding);
-}
-
-/* ------- TASKS DISPLAY ------- */
-
-#tasks-display {
-    flex: 1;
     padding: var(--general-padding);
+    background-color: aliceblue;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sidebar-gap);
 }
+
+#home-container,
+#projects-container,
+#projects-display {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sidebar-gap);
+}
+
+.project {
+    cursor: pointer;
+    padding: 6px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#new-project {
+    padding: 6px 10px;
+}
+
+#new-project:hover,
+.project:hover {
+    background-color: #4a4a4a50;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+/* ------- TASK DISPLAY ------- */
 
 #tasks-container {
+    padding: var(--general-padding);
+    flex: 1;
+}
+
+#tasks-display {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-padding);
+    gap: var(--sidebar-gap);
 }
 
 .task {
-    border: 1px solid black;
-    padding: 8px 16px;
     display: flex;
     flex-direction: column;
+    gap: 4px;
 }
 
-.task-general-info {
+.task-main {
+    padding: var(--task-padding);
+    display: grid;
+    grid-template-columns: 1fr min-content 150px;
+    border-bottom: 1px solid #d2d2d2;
     cursor: pointer;
 }
 
+.task-icon {
+    width: 1.3rem;
+    height: auto;
+}
 
-.task > .task-additional-info.collapse {
+.task-additional {
+    padding: var(--task-padding);
+    border: 1px solid #d2d2d2;
+    border-radius: 4px;
+}
+
+.collapse {
     display: none;
 }
 
-.task > .task-additional-info.expand {
+.expand {
     display: block;
+}
+
+/* ------- NEW TASK ------- */
+
+#new-task-form {
+    padding: var(--task-padding);
+    display: grid;
+    grid-template-columns: 1fr min-content;
+    gap: 16px;
+}
+
+#new-task-form.collapse {
+    display: none;
+}
+
+.hide {
+    visibility: hidden;
+}
+
+#new-task-main-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sidebar-gap);
+}
+
+dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

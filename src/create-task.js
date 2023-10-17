@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export default class Task {
-    constructor(name, description, dueDate, priority) {
+    constructor(name, description, date, priority) {
         this._id = uuidv4();
         this._name = name;
         this._description = description;
-        this._dueDate = dueDate;
+        this._date = date;
         this._priority = priority;
     }
 
@@ -16,7 +16,7 @@ export default class Task {
     get name() {
         return this._name;
     }
-    
+
     set name(value) {
         return this._name = value;
     }
@@ -29,12 +29,12 @@ export default class Task {
         return this._description = value;
     }
 
-    get dueDate() {
-        return this._dueDate;
+    get date() {
+        return this._date;
     }
 
-    set dueDate(value) {
-        return this._dueDate = value;
+    set date(value) {
+        return this._date = value;
     }
 
     get priority() {
