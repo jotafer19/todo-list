@@ -44,7 +44,7 @@ const projectsDisplay = document.querySelector("#projects-display");
 projectsDisplay.appendChild(createProjectDiv(project1))
 projectsDisplay.appendChild(createProjectDiv(project2))
 projectsDisplay.addEventListener("click", (event) => {
-    if (document.querySelector("#inbox").classList.contains("active")) {
+    if (document.querySelector("#inbox").classList.contains("active") && !event.target.classList.contains("edit-icon")) {
         document.querySelector("#inbox").classList.toggle("active");
     }
     projectsDisplay.childNodes.forEach(child => {
@@ -84,6 +84,52 @@ projectsDisplay.addEventListener("click", event => {
         }
     }
 })
+
+// EDIT PROJECT
+projectsDisplay.addEventListener("click", event => {
+    if (event.target.classList.contains("edit-icon")) {
+        const targetedProject = event.target.parentElement.parentElement;
+        for (let project of inbox.showAllProjects) {
+            if (project.id === targetedProject.getAttribute("data-id")) {
+                const editProjectForm = document.querySelector("#edit-project-form");
+                document.querySelector("#edit-project-name").value = project.name
+                editProjectForm.classList.toggle("collapse")
+                targetedProject.classList.toggle("collapse")
+                targetedProject.classList.toggle("editing-project")
+                projectsDisplay.insertBefore(editProjectForm, targetedProject)
+            }
+        }
+    }
+})
+
+const editProjectSubmitButton = document.querySelector("#edit-project-submit");
+editProjectSubmitButton.addEventListener("click", event => {
+    event.preventDefault();
+    const editProjectForm = document.querySelector("#edit-project-form");
+    const editingProject = document.querySelector(".editing-project");
+    for (let project of inbox.showAllProjects) {
+        if (project.id === editingProject.dataset.id) {
+            project.name = document.querySelector("#edit-project-name").value;
+            editingProject.textContent = project.name;
+            editProjectForm.classList.toggle("collapse")
+            editingProject.classList.toggle("collapse")
+            editingProject.classList.toggle("editing-project")
+
+            document.querySelectorAll("#new-task-project > option").forEach(option => {
+                if (option.value === project.id) {
+                    option.textContent = project.name
+                }
+            })
+
+            document.querySelectorAll("#edit-task-project > option").forEach(option => {
+                if (option.value === project.id) {
+                    option.textContent = project.name
+                }
+            })
+        }
+    }
+})
+
 // NEW PROJECT BUTTON
 const newProjectButton = document.querySelector("#new-project");
 newProjectButton.addEventListener("click", () => {
@@ -109,6 +155,7 @@ submitNewProjectButton.addEventListener("click", (event) => {
     projectsDisplay.appendChild(createProjectDiv(newProject));
     newProjectButton.classList.toggle("collapse");
     newProjectButton.nextElementSibling.classList.toggle("collapse");
+    document.querySelector("#new-project-form").reset();
 
     createProjectOption(newProject);
     const newProjectOption = document.createElement("option");
