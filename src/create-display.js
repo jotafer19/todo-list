@@ -63,48 +63,4 @@ function createProjectDiv(project) {
     return projectDiv;
 }
 
-function editTask(task) {
-    const editTaskForm = document.createElement("form");
-    editTaskForm.classList.add("edit-task-form");
-
-    const editTaskName = document.createElement("input");
-    editTaskName.classList.add("edit-task-name");
-    editTaskName.value = task.name;
-
-    const editTaskDescription = document.createElement("textarea");
-    editTaskDescription.classList.add("edit-task-description");
-    editTaskDescription.textContent = task.description;
-
-    const editTaskDate = document.createElement("input");
-    editTaskDate.classList.add("edit-task-date");
-    editTaskDate.setAttribute("type", "date");
-    editTaskDate.value = task.date;
-
-    const editTaskPriority = document.createElement("select");
-    editTaskPriority.classList.add("edit-task-priority");
-    const taskPriority = ["High", "Medium", "Low"];
-    for (let item of taskPriority) {
-        const priorityItem = document.createElement("option");
-        if (item === task.priority) {
-            priorityItem.setAttribute("selected", "selected");
-        }
-        priorityItem.textContent = item;
-        priorityItem.setAttribute("value", item);
-        editTaskPriority.appendChild(priorityItem);
-    }
-
-    const editTaskButtons = document.createElement("div");
-    const editSubmitButton = document.createElement("button");
-    editSubmitButton.setAttribute("type", "submit");
-    editSubmitButton.setAttribute("id", "edit-task-submit");
-    editSubmitButton.textContent = "Edit Task";
-    const editCancelButton = document.createElement("button");
-    editCancelButton.textContent = "Cancel";
-    editTaskButtons.append(editSubmitButton, editCancelButton);
-
-    editTaskForm.append(editTaskName, editTaskDescription, editTaskDate, editTaskPriority, editTaskButtons);
-
-    return editTaskForm;
-}
-
-export { loadPage, createTaskDiv, createProjectDiv, editTask }
+export { loadPage, createTaskDiv, createProjectDiv }

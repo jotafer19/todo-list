@@ -1,4 +1,5 @@
 import Task from "./create-task";
+import { createTaskDiv } from "./create-display";
 
 function deleteCurrentTasks() {
     const currentTasks = document.querySelectorAll(".task");
@@ -12,6 +13,14 @@ function addNewTask() {
     newTaskForm.classList.toggle("collapse");
     const newTaskButton = document.querySelector("#new-task-add");
     newTaskButton.classList.toggle("collapse");
+    if (!document.querySelector("#inbox").classList.contains("active")) {
+        const allOptions = document.querySelectorAll("#new-task-project > option");
+        allOptions.forEach(option => {
+            if (option.value === document.querySelector(".active").getAttribute("data-id")) {
+                option.setAttribute("selected", "selected")
+            }
+        })
+    }
 }
 
 function createNewTask() {
@@ -19,23 +28,23 @@ function createNewTask() {
     const newTaskDescription = document.querySelector("#new-task-description").value;
     const newTaskDate = document.querySelector("#new-task-date").value;
     const newTaskPriority = document.querySelector("#new-task-priority").value;
-    const newTask = new Task(newTaskTitle, newTaskDescription, newTaskDate, newTaskPriority);
+    const newTaskProject = document.querySelector("#new-task-project").value;
+    const newTask = new Task(newTaskTitle, newTaskDescription, newTaskDate, newTaskPriority, newTaskProject);
+    console.log(newTask)
     return newTask;
 }
 
 function createProjectOption(newProject) {
     const newTaskProject = document.querySelector("#new-task-project");
     const createOption = document.createElement("option");
-    createOption.setAttribute("id", newProject.id);
-    createOption.setAttribute("value", newProject.name);
+    createOption.setAttribute("value", newProject.id);
     createOption.textContent = newProject.name
     newTaskProject.appendChild(createOption)
 }
 
-function getTaskProject(inbox) {
-    const newTaskProject = document.querySelector("#new-task-project").value;
+function getTaskProject(inbox, task) {
     for (let project of inbox.showAllProjects) {
-        if (newTaskProject === project.name) {
+        if (project.id === task.project) {
             return project;
         }
     }
@@ -49,11 +58,21 @@ function resetNewTaskForm() {
     newTaskForm.reset();
 }
 
-function submitEditTask(task) {
-    task.name = document.querySelector(".edit-task-name").value;;
-    task.description = document.querySelector(".edit-task-description").value;
-    task.date = document.querySelector(".edit-task-date").value;
-    task.priority = document.querySelector(".edit-task-priority").value;
+function getStorageProject(inbox, task) {
+    for (let project of inbox.showAllProjects) {
+        if (project.showProject.includes(task)) {
+            return project;
+        }
+    }
+}
+
+function getEditingTask(inbox) {
+    const editingTaskDiv = document.querySelector(".editing-task");
+    for (let task of inbox.showTasks) {
+        if (task.id === editingTaskDiv.getAttribute("id")) {
+            return task;
+        }
+    }
 }
 
 export {
@@ -63,5 +82,6 @@ export {
     createProjectOption,
     getTaskProject,
     resetNewTaskForm,
-    submitEditTask
+    getStorageProject,
+    getEditingTask,
 }
