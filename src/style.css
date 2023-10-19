@@ -68,6 +68,16 @@ body {
     border-radius: 4px;
 }
 
+.project > .project-icons {
+    visibility: hidden
+}
+
+.project:hover > .project-icons {
+    visibility: visible;
+}
+
+
+
 /* ------- TASK DISPLAY ------- */
 
 #tasks-container {

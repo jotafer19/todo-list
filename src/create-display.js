@@ -1,5 +1,4 @@
 import editIcon from "./images/edit_icon.svg";
-import moveIcon from "./images/move_icon.svg";
 import deleteIcon from "./images/delete_icon.svg";
 
 function loadPage(inbox) {
@@ -31,16 +30,12 @@ function createTaskDiv(task) {
     myEditIcon.src = editIcon;
     myEditIcon.classList.add("edit-icon");
     myEditIcon.classList.add("task-icon");
-    const myMoveIcon = new Image();
-    myMoveIcon.src = moveIcon;
-    myMoveIcon.classList.add("move-icon");
-    myMoveIcon.classList.add("task-icon");
     const myDeleteIcon = new Image();
     myDeleteIcon.src = deleteIcon;
     myDeleteIcon.classList.add("delete-icon");
     myDeleteIcon.classList.add("task-icon");
 
-    iconsContainer.append(myEditIcon, myMoveIcon, myDeleteIcon);
+    iconsContainer.append(myEditIcon, myDeleteIcon);
 
     taskMainInfo.append(taskMainLeft, taskMainRight, iconsContainer);
 
@@ -59,6 +54,18 @@ function createProjectDiv(project) {
     projectDiv.classList.add("project");
     projectDiv.setAttribute("data-id", `${project.id}`)
     projectDiv.textContent = project.name;
+    const iconsContainer = document.createElement("div");
+    iconsContainer.classList.add("project-icons");
+    const myEditIcon = new Image();
+    myEditIcon.src = editIcon;
+    myEditIcon.classList.add("edit-icon");
+    myEditIcon.classList.add("project-icon");
+    const myDeleteIcon = new Image();
+    myDeleteIcon.src = deleteIcon;
+    myDeleteIcon.classList.add("delete-icon");
+    myDeleteIcon.classList.add("project-icon");
+    iconsContainer.append(myEditIcon, myDeleteIcon);
+    projectDiv.appendChild(iconsContainer);
 
     return projectDiv;
 }

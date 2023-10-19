@@ -44,8 +44,6 @@ const projectsDisplay = document.querySelector("#projects-display");
 projectsDisplay.appendChild(createProjectDiv(project1))
 projectsDisplay.appendChild(createProjectDiv(project2))
 projectsDisplay.addEventListener("click", (event) => {
-    console.log(event.target)
-    console.log(inbox.showAllProjects)
     if (document.querySelector("#inbox").classList.contains("active")) {
         document.querySelector("#inbox").classList.toggle("active");
     }
@@ -68,7 +66,24 @@ projectsDisplay.addEventListener("click", (event) => {
 })  
 
 // DELETE PROJECT
-
+projectsDisplay.addEventListener("click", event => {
+    if (event.target.classList.contains("delete-icon")) {
+        const targetedProject = event.target.parentElement.parentElement;
+        for (let project of inbox.showAllProjects) {
+            if (project.id === targetedProject.dataset.id) {
+                inbox.deleteProject(project);
+                targetedProject.remove();
+                console.log(inbox.showAllProjects)
+                console.log(inbox.showTasks)
+                deleteCurrentTasks();
+                inboxButton.classList.toggle("active");
+                inbox.showTasks.forEach(task => {
+                    tasksDisplay.append(createTaskDiv(task));
+                })
+            }
+        }
+    }
+})
 // NEW PROJECT BUTTON
 const newProjectButton = document.querySelector("#new-project");
 newProjectButton.addEventListener("click", () => {
@@ -178,7 +193,6 @@ function newProjectStorage(myNewStorage) {
 const editTaskSubmitButton = document.querySelector("#edit-task-submit");
 editTaskSubmitButton.addEventListener("click", event => {
     event.preventDefault();
-    //primero hay que hacer una funcion para coger la task que se edita, mirar clase editing-task
     const editingTask = getEditingTask(inbox);
     const originalProject = getStorageProject(inbox, editingTask)
     const newProject = newProjectStorage(document.querySelector("#edit-task-project").value);
@@ -202,7 +216,3 @@ editTaskSubmitButton.addEventListener("click", event => {
     }
     document.querySelector("#edit-task-dialog").close();
 })
-
-// editTaskProject(inbox);
-
-// MOVE TASK FROM PROJECT
