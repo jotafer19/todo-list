@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import { compareAsc, compareDesc, format } from 'date-fns'
 
 export default class Project {
     constructor(name) {
@@ -34,9 +33,23 @@ export default class Project {
 
     addTask(task) {
         this._project.push(task);
+        this._project.sort(function compare(a, b) {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return dateA - dateB;
+        })
+        console.log(this._project)
     }
 
     deleteTask(task) {
         this._project.splice(this._project.indexOf(task), 1);
+    }
+
+    get updateProject() {
+        this._project.sort(function compare(a, b) {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return dateA - dateB;
+        })
     }
 }

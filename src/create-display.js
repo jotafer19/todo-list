@@ -12,6 +12,7 @@ function createTaskDiv(task) {
     const taskDiv = document.createElement("div");
     taskDiv.classList.add("task");
     taskDiv.setAttribute("id", task.id)
+    taskDiv.setAttribute("data-date", task.date)
 
     const taskMainInfo = document.createElement("div");
     taskMainInfo.classList.add("task-main");

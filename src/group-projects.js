@@ -30,7 +30,26 @@ export default class GroupProjects {
                 allTasks.push(task);
             })
         })
+        allTasks.sort(function compare(a, b) {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return dateA - dateB;
+        })
         return allTasks;
+    }
+
+    get updateTasks() {
+        const allTasks = [];
+        this._allProjects.forEach(project => {
+            project.showProject.forEach(task => {
+                allTasks.push(task);
+            })
+        })
+        allTasks.sort(function compare(a, b) {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return dateA - dateB;
+        })
     }
 
     deleteTask(task) {

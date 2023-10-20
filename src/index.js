@@ -191,7 +191,17 @@ submitNewTaskButton.addEventListener("click", (event) => {
     selectedProject.addTask(newTask);
     if (document.querySelector(".active").dataset.id === selectedProject.id || 
     document.querySelector("#inbox").classList.contains("active")) {
-        document.querySelector("#tasks-display").appendChild(newTaskDisplay);
+    // document.querySelector("#tasks-display").appendChild(newTaskDisplay);
+        deleteCurrentTasks();
+        if (document.querySelector("#inbox").classList.contains("active")) {
+            inbox.showTasks.forEach(task => {
+                tasksDisplay.append(createTaskDiv(task));
+            })
+        } else {
+            selectedProject.showProject.forEach(task => {
+                tasksDisplay.appendChild(createTaskDiv(task));
+            })
+        }
     }
     resetNewTaskForm();
 })
@@ -246,7 +256,6 @@ editTaskSubmitButton.addEventListener("click", event => {
     if (newProject !== originalProject) {
         originalProject.deleteTask(editingTask);
         newProject.addTask(editingTask);
-        console.log(editingTask)
     }
     editingTask.name = document.querySelector("#edit-task-name").value;
     editingTask.description = document.querySelector("#edit-task-description").value;
@@ -256,10 +265,18 @@ editTaskSubmitButton.addEventListener("click", event => {
     console.log(editingTask)
     if (document.querySelector("#inbox").classList.contains("active") || 
     document.querySelector(".project.active").dataset.id === editingTask.project) {
-        const editingTaskDiv = createTaskDiv(editingTask);
-        document.querySelector(".editing-task").replaceWith(editingTaskDiv);
-    } else if (document.querySelector(".project.active").dataset.id !== editingTask.project) {
-        document.querySelector(".editing-task").remove()
+        deleteCurrentTasks();
+        if (document.querySelector("#inbox").classList.contains("active")) {
+            inbox.updateTasks;
+            inbox.showTasks.forEach(task => {
+                tasksDisplay.append(createTaskDiv(task));
+            })
+        } else {
+            newProject.updateProject;
+            newProject.showProject.forEach(task => {
+                tasksDisplay.appendChild(createTaskDiv(task));
+            })
+        }
     }
     document.querySelector("#edit-task-dialog").close();
 })
