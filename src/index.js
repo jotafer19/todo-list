@@ -2,6 +2,7 @@ import "./style.css"
 import Task from "./create-task";
 import Project from "./create-project";
 import GroupProjects from "./group-projects";
+import { format } from 'date-fns'
 import { loadPage, createProjectDiv, createTaskDiv } from "./create-display";
 import { deleteCurrentTasks, addNewTask, createNewTask, createProjectOption, getTaskProject, resetNewTaskForm, getStorageProject, getEditingTask } from "./DOM-functions";
 
@@ -27,13 +28,14 @@ loadPage(inbox);
 const inboxButton = document.querySelector("#inbox");
 inboxButton.addEventListener("click", () => {
     deleteCurrentTasks();
-    const checkProjects = document.querySelectorAll(".project");
-    checkProjects.forEach(project => {
-        if (project.classList.contains("active")) {
-            project.classList.toggle("active");
-        }
-    })
-    inboxButton.classList.toggle("active");
+    if (document.querySelector("#today-tasks").classList.contains("active") ||
+    document.querySelector("#week-tasks").classList.contains("active")) {
+        document.querySelector("#new-task-add").classList.toggle("collapse");
+    }
+    if (!inboxButton.classList.contains("active")) {
+        document.querySelector(".active").classList.toggle("active");
+        inboxButton.classList.toggle("active");
+    }
     inbox.showTasks.forEach(task => {
         tasksDisplay.append(createTaskDiv(task));
     })
@@ -44,23 +46,38 @@ const projectsDisplay = document.querySelector("#projects-display");
 projectsDisplay.appendChild(createProjectDiv(project1))
 projectsDisplay.appendChild(createProjectDiv(project2))
 projectsDisplay.addEventListener("click", (event) => {
-    if (document.querySelector("#inbox").classList.contains("active") && !event.target.classList.contains("edit-icon")) {
-        document.querySelector("#inbox").classList.toggle("active");
-    }
-    projectsDisplay.childNodes.forEach(child => {
-        if (child !== event.target && child.classList.contains("active")) {
-            child.classList.toggle("active");
+    if (event.target.classList.contains("project") || event.target.classList.contains("project-name-container") || 
+    event.target.classList.contains("edit-icon")) {
+        if (document.querySelector("#inbox").classList.contains("active")) {
+            document.querySelector("#inbox").classList.toggle("active");
         }
-    })
-    for (let project of inbox.showAllProjects) {
-        if (event.target.dataset.id === project.id && !event.target.classList.contains("active")) {
-            console.log(project.showProject)
-            event.target.classList.toggle("active");
-            deleteCurrentTasks();
-            project.showProject.forEach(task => {
-                const changeTask = createTaskDiv(task);
-                tasksDisplay.appendChild(changeTask)
-            })
+        if (document.querySelector("#today-tasks").classList.contains("active") ||
+        document.querySelector("#week-tasks").classList.contains("active")) {
+            document.querySelector("#new-task-add").classList.toggle("collapse");
+        }
+        projectsDisplay.childNodes.forEach(child => {
+            if (child !== event.target && child.classList.contains("active")) {
+                child.classList.toggle("active");
+            }
+        })
+        let projectSelection;
+        if (event.target.classList.contains("project")) {
+            projectSelection = event.target;
+        } else if (event.target.classList.contains("project-name-container")) {
+            projectSelection = event.target.parentElement;
+        } else if (event.target.classList.contains("edit-icon")) {
+            projectSelection = event.target.parentElement.parentElement;
+        }
+    
+        for (let project of inbox.showAllProjects) {
+            if (projectSelection.dataset.id === project.id && !projectSelection.classList.contains("active")) {
+                projectSelection.classList.toggle("active");
+                deleteCurrentTasks();
+                project.showProject.forEach(task => {
+                    const changeTask = createTaskDiv(task);
+                    tasksDisplay.appendChild(changeTask)
+                })
+            }
         }
     }
 })  
@@ -107,10 +124,11 @@ editProjectSubmitButton.addEventListener("click", event => {
     event.preventDefault();
     const editProjectForm = document.querySelector("#edit-project-form");
     const editingProject = document.querySelector(".editing-project");
+    console.log(editingProject)
     for (let project of inbox.showAllProjects) {
         if (project.id === editingProject.dataset.id) {
             project.name = document.querySelector("#edit-project-name").value;
-            editingProject.textContent = project.name;
+            editingProject.firstChild.textContent = project.name;
             editProjectForm.classList.toggle("collapse")
             editingProject.classList.toggle("collapse")
             editingProject.classList.toggle("editing-project")
@@ -279,4 +297,45 @@ editTaskSubmitButton.addEventListener("click", event => {
         }
     }
     document.querySelector("#edit-task-dialog").close();
+})
+
+// TODAY TASKS
+const todayTasks = document.querySelector("#today-tasks");
+todayTasks.addEventListener("click", () => {
+    if (!document.querySelector("#new-task-add").classList.contains("collapse")) {
+        document.querySelector("#new-task-add").classList.toggle("collapse");
+    }
+    if (!todayTasks.classList.contains("active")) {
+        document.querySelector(".active").classList.toggle("active");
+        todayTasks.classList.toggle("active");
+    }
+    deleteCurrentTasks();
+    inbox.showTasks.forEach(task => {
+        if (format(new Date(task.date), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd")) {
+            tasksDisplay.appendChild(createTaskDiv(task));
+        }
+    })
+})
+
+// THIS WEEK TASKS
+const thisWeekTasks = document.querySelector("#week-tasks");
+thisWeekTasks.addEventListener("click", () => {
+    if (!document.querySelector("#new-task-add").classList.contains("collapse")) {
+        document.querySelector("#new-task-add").classList.toggle("collapse");
+    }
+    if (todayTasks.classList.contains("active")) {
+        document.querySelector(".active").classList.toggle("active");
+        thisWeekTasks.classList.toggle("active");
+    }
+    deleteCurrentTasks();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0)
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    inbox.showTasks.forEach(task => {
+        const taskDate = new Date(task.date);
+        if (taskDate >= today && taskDate <= nextWeek) {
+            tasksDisplay.appendChild(createTaskDiv(task));
+        }
+    })
 })

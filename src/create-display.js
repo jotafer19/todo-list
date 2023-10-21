@@ -54,7 +54,9 @@ function createProjectDiv(project) {
     const projectDiv = document.createElement("div");
     projectDiv.classList.add("project");
     projectDiv.setAttribute("data-id", `${project.id}`)
-    projectDiv.textContent = project.name;
+    const projectNameContainer = document.createElement("div");
+    projectNameContainer.classList.add("project-name-container");
+    projectNameContainer.textContent = project.name;
     const iconsContainer = document.createElement("div");
     iconsContainer.classList.add("project-icons");
     const myEditIcon = new Image();
@@ -66,7 +68,7 @@ function createProjectDiv(project) {
     myDeleteIcon.classList.add("delete-icon");
     myDeleteIcon.classList.add("project-icon");
     iconsContainer.append(myEditIcon, myDeleteIcon);
-    projectDiv.appendChild(iconsContainer);
+    projectDiv.append(projectNameContainer, iconsContainer);
 
     return projectDiv;
 }

@@ -69,11 +69,11 @@ body {
 }
 
 .project > .project-icons {
-    visibility: hidden
+    display: none;
 }
 
 .project:hover > .project-icons {
-    visibility: visible;
+    display: inline-block;
 }
 
 
