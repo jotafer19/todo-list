@@ -115,7 +115,7 @@ h2 {
     border-radius: 4px;
 }
 
-.task > .task-main > .task-icons {
+.task > .task-icons {
     visibility: hidden;
 }
 
@@ -188,7 +188,7 @@ h2 {
 
 .task {
     display: grid;
-    grid-template-columns: min-content 1fr;
+    grid-template-columns: min-content 1fr 50px;
     gap: 8px;
 }
 
@@ -205,7 +205,6 @@ h2 {
     display: grid;
     grid-template-columns: minmax(160px, 1fr) 1fr;
     gap: 30px;
-    border-bottom: 1px solid #4a4a4a50;
     padding: 10px 0;
 }
 
@@ -213,13 +212,15 @@ h2 {
     text-align: right;
 }
 
-.task:hover > .task-main > .task-icons{
+.task:hover > .task-icons{
     visibility: visible;
     display: flex;
+    align-items: center;
 }
 
 .task-icon,
 .project-icon {
+    cursor: pointer;
     width: 1.2rem;
     height: auto;
 }
@@ -237,6 +238,18 @@ h2 {
 
 .expand {
     display: block;
+}
+
+.task-main[data-priority="High"] {
+    border-bottom: 1px solid #ff0000;
+}
+
+.task-main[data-priority="Medium"] {
+    border-bottom: 1px solid #ffbb00;
+}
+
+.task-main[data-priority="Low"] {
+    border-bottom: 1px solid #00c817;
 }
 
 /* ------- NEW TASK ------- */

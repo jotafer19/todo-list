@@ -213,10 +213,10 @@ const tasksDisplay = document.querySelector("#tasks-display");
 tasksDisplay.addEventListener("click", event => {
     console.log(event.target)
     if (event.target.className === "task-main") {
-        event.target.nextElementSibling.classList.toggle("collapse");
+        event.target.nextElementSibling.nextElementSibling.classList.toggle("collapse");
     }
     if (event.target.className === "task-main-left" || event.target.className === "task-main-right") {
-        event.target.parentElement.parentElement.nextElementSibling.classList.toggle("collapse");
+        event.target.parentElement.parentElement.nextElementSibling.nextElementSibling.classList.toggle("collapse");
     }
 
     if (event.target.className === "task-info") {
@@ -235,7 +235,6 @@ const submitNewTaskButton = document.querySelector("#new-task-form");
 submitNewTaskButton.addEventListener("submit", (event) => {
     event.preventDefault();
     const newTask = createNewTask();
-    const newTaskDisplay = createTaskDiv(newTask);
     const selectedProject = getTaskProject(inbox, newTask);
     selectedProject.addTask(newTask);
     if (document.querySelector(".active").dataset.id === selectedProject.id || 
@@ -291,7 +290,7 @@ tasksDisplay.addEventListener("click", event => {
 // EDIT TASK
 tasksDisplay.addEventListener("click", event => {
     if (event.target.classList.contains("edit-icon")) {
-        const targetedTaskDiv = event.target.parentElement.parentElement.parentElement;
+        const targetedTaskDiv = event.target.parentElement.parentElement;
         for (let task of inbox.showTasks) {
             if (task.id === targetedTaskDiv.getAttribute("id")) {
                 const editDialog = document.querySelector("#edit-task-dialog");
@@ -330,22 +329,27 @@ editTaskSubmitButton.addEventListener("click", event => {
     editingTask.date = document.querySelector("#edit-task-date").value;
     editingTask.priority = document.querySelector("#edit-task-priority").value;
     editingTask.project = document.querySelector("#edit-task-project").value;
-    console.log(editingTask)
-    if (document.querySelector("#inbox").classList.contains("active") || 
-    document.querySelector(".project.active").dataset.id === editingTask.project) {
+
+    if (document.querySelector("#inbox").classList.contains("active")) {
         deleteCurrentTasks();
-        if (document.querySelector("#inbox").classList.contains("active")) {
-            inbox.updateTasks;
-            inbox.showTasks.forEach(task => {
-                tasksDisplay.append(createTaskDiv(task));
-            })
-        } else {
-            newProject.updateProject;
-            newProject.showProject.forEach(task => {
-                tasksDisplay.appendChild(createTaskDiv(task));
-            })
-        }
+        inbox.updateTasks;
+        inbox.showTasks.forEach(task => {
+            tasksDisplay.appendChild(createTaskDiv(task));
+        })
+    } else if (document.querySelector(".project.active").dataset.id === editingTask.project) {
+        deleteCurrentTasks();
+        newProject.updateProject;
+        newProject.showProject.forEach(task => {
+            tasksDisplay.appendChild(createTaskDiv(task));
+        })
+    } else if (document.querySelector(".project.active").dataset.id !== editingTask.project) {
+        deleteCurrentTasks();
+        originalProject.updateProject;
+        originalProject.showProject.forEach(task => {
+            tasksDisplay.appendChild(createTaskDiv(task));
+        })
     }
+
     document.querySelector("#edit-task-dialog").close();
 })
 

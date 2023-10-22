@@ -21,6 +21,7 @@ function createTaskDiv(task) {
 
     const taskMainInfo = document.createElement("div");
     taskMainInfo.classList.add("task-main");
+    taskMainInfo.setAttribute("data-priority", task.priority)
 
     const checkTask = document.createElement("input");
     checkTask.classList.add("task-done");
@@ -49,14 +50,14 @@ function createTaskDiv(task) {
 
     iconsContainer.append(myEditIcon, myDeleteIcon);
 
-    taskMainInfo.append(unnamedContainer, iconsContainer);
+    taskMainInfo.appendChild(unnamedContainer);
 
     const taskAdditionalInfo = document.createElement("div");
     taskAdditionalInfo.classList.add("task-additional");
     taskAdditionalInfo.classList.add("collapse");
     taskAdditionalInfo.textContent = task.description;
     
-    taskDiv.append(checkTask, taskMainInfo, taskAdditionalInfo);
+    taskDiv.append(checkTask, taskMainInfo,     iconsContainer, taskAdditionalInfo);
 
     return taskDiv;
 }
