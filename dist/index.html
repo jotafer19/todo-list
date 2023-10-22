@@ -3,42 +3,48 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>To-Do List</title>
+    <title>myToDos</title>
     <script type="module" src="runtime.js"></script>
     <script type="module" src="main.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,300,0,-25" />  </head>
   <body>
-    <header id="header">To-Do List</header>
+    <header id="header">
+      <h1>myToDos</h1>
+    </header>
     <main id="main-container">
       <nav id="side-bar">
         <div class="side-bar-container" id="home-container">
-          Home
-            <div id="inbox">Inbox</div>
-            <div id="today-tasks">Today</div>
-            <div id="week-tasks">This Week</div>
+          <h2>Home</h2>
+            <div id="home-display">
+              <div id="inbox">Inbox</div>
+              <div id="today-tasks">Today</div>
+              <div id="week-tasks">This Week</div>
+            </div>
         </div>
         <div class="side-bar-container" id="projects-container">
-          <div id="project-header">Projects</div>
+          <div id="project-header">
+            <h2>Projects</h2>
+          </div>
           <div id="projects-display"></div>
           <div id="new-project"><span class="material-symbols-outlined">add</span>New Project</div>
           <form action="#" id="new-project-form" class="collapse">
             <input type="text" id="new-project-name" placeholder="Project's name" required>
             <div>
-              <button id="new-project-submit" type="submit">Add Project</button>
-              <button id="new-project-cancel">Cancel</button>
+              <button id="new-project-submit" type="submit" class="btn">Add</button>
+              <button id="new-project-cancel" class="btn">Cancel</button>
             </div>
           </form>
         </div>
         <form action="#" id="edit-project-form" class="collapse">
           <input type="text" name="edit-project-name" id="edit-project-name">
           <div>
-            <button type="submit" id="edit-project-submit">Edit Project</button>
-            <button id="edit-project-cancel"> Cancel</button>
+            <button type="submit" id="edit-project-submit" class="btn">Edit</button>
+            <button id="edit-project-cancel" class="btn"> Cancel</button>
           </div>
         </form>
       </nav>
       <div id="tasks-container">
-        <div id="task-header">Project Name</div>
+        <div id="task-header"><h3></h3></div>
         <div id="tasks-display"></div>
         <div id="new-task-container">
           <div id="new-task-add"><span class="material-symbols-outlined">add</span>New Task</div>
@@ -60,8 +66,8 @@
               </select>
             </div>
             <div id="new-task-buttons">
-              <button type="submit" id="new-task-submit">Add Task</button>
-              <button id="new-task-cancel">Cancel</button>
+              <button type="submit" id="new-task-submit" class="btn">Add</button>
+              <button id="new-task-cancel" class="btn">Cancel</button>
             </div>
           </form>
         </div>
@@ -69,21 +75,25 @@
     </main>
     <dialog id="edit-task-dialog">
       <form action="#" id="edit-task-form">
-        <input type="text" name="edit-task-name" id="edit-task-name">
-        <textarea name="edit-task-description" id="edit-task-description" cols="30" rows="10"></textarea>
-        <input type="date" name="edit-task-date" id="edit-task-date">
-        <select name="edit-task-priority" id="edit-task-priority">
-          Priority
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
-        <select name="edit-task-project" id="edit-task-project">
-          Project
-        </select>
         <div>
-          <button type="submit" id="edit-task-submit">Edit Task</button>
-          <button id="edit-task-cancel">Cancel</button>
+          <input type="text" name="edit-task-name" id="edit-task-name">
+          <textarea name="edit-task-description" id="edit-task-description" cols="30" rows="10"></textarea>
+        </div>
+        <div>
+          <input type="date" name="edit-task-date" id="edit-task-date">
+          <label for="edit-task-priority">Priority</label>
+          <select name="edit-task-priority" id="edit-task-priority">
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <label for="edit-task-priority">Priority</label>
+          <select name="edit-task-project" id="edit-task-project">
+          </select>
+        </div>
+        <div>
+          <button type="submit" id="edit-task-submit" class="btn">Edit</button>
+          <button id="edit-task-cancel" class="btn">Cancel</button>
         </div>
       </form>
     </dialog>

@@ -1,6 +1,7 @@
 :root {
     --general-padding: 30px;
-    --sidebar-gap: 10px;
+    --sidebar-containers-gap: 24px;
+    --sidebar-elements-gap: 12px;
     --task-padding: 6px 16px;
 }
 
@@ -19,6 +20,9 @@ body {
 #header {
     min-height: 10svh;
     background-color: antiquewhite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* ------- MAIN ------- */
@@ -38,33 +42,53 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--sidebar-gap);
+    gap: var(--sidebar-containers-gap);
 }
 
 #home-container,
-#projects-container,
+#projects-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sidebar-elements-gap);    
+}
+
+#home-display,
 #projects-display {
     display: flex;
     flex-direction: column;
-    gap: var(--sidebar-gap);
+    justify-content: center;
+        gap: var(--sidebar-elements-gap);
 }
 
-.project {
+h2 {
+    border-bottom: 1px solid black;
+}
+
+.project,
+#inbox,
+#today-tasks,
+#week-tasks {
     cursor: pointer;
-    padding: 6px 10px;
+    padding: 8px 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: var(--sidebar-elements-gap);
 }
 
 #new-project {
-    padding: 6px 10px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
 }
 
 #new-project:hover,
-.project:hover {
+.project:hover,
+#inbox:hover,
+#today-tasks:hover,
+#week-tasks:hover {
     background-color: #4a4a4a50;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 4px;
 }
 
@@ -76,19 +100,63 @@ body {
     display: inline-block;
 }
 
+#new-project.collapse,
+#new-project-form.collapse,
+#edit-project-form.collapse {
+    display: none;
+}
 
+#new-project-form,
+#edit-project-form {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--task-padding);
+}
+
+#new-project-form > div,
+#edit-project-form > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--task-padding);
+}
+
+#new-project-form > div > button,
+#edit-project-form > div > button {
+    flex: 1;
+}
+
+#new-project-form > input,
+#edit-project-form > input {
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid black;
+}
 
 /* ------- TASK DISPLAY ------- */
 
 #tasks-container {
     padding: var(--general-padding);
     flex: 1;
-}
-
-#tasks-display {
     display: flex;
     flex-direction: column;
-    gap: var(--sidebar-gap);
+    align-items: center;
+    gap: var(--sidebar-containers-gap);
+
+}
+
+#task-header,
+#tasks-display,
+#new-task-container {
+    width: 80%;
+}
+
+
+#tasks-display {
+    padding: 6px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sidebar-elements-gap);
 }
 
 .task {
@@ -98,15 +166,36 @@ body {
 }
 
 .task-main {
-    padding: var(--task-padding);
-    display: grid;
-    grid-template-columns: 1fr min-content 150px;
-    border-bottom: 1px solid #d2d2d2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sidebar-containers-gap);
     cursor: pointer;
 }
 
-.task-icon {
-    width: 1.3rem;
+.task-main > div:first-child {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(160px, 1fr) 1fr;
+    gap: 30px;
+    border-bottom: 1px solid #4a4a4a50;
+    padding: 10px 0;
+}
+
+.task-main-right {
+    text-align: right;
+}
+
+.task-icons,
+.project:hover > .project-icons {
+    display: flex;
+    gap: 4px;
+
+}
+
+.task-icon,
+.project-icon {
+    width: 1.2rem;
     height: auto;
 }
 
@@ -126,8 +215,35 @@ body {
 
 /* ------- NEW TASK ------- */
 
-#new-task-form {
-    padding: var(--task-padding);
+#new-task-container {
+    padding: 6px 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+#new-task-add,
+#new-task-add:hover {
+    align-self: flex-end;
+    padding: 6px 30px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+}
+
+#new-task-add:hover {
+    background-color: #4a4a4a50;    
+    border-radius: 4px;
+}
+
+
+#new-task-add.collapse {
+    display: none;
+}
+
+#new-task-form,
+#edit-task-form {
+    padding: 0;
     display: grid;
     grid-template-columns: 1fr min-content;
     gap: 16px;
@@ -137,14 +253,27 @@ body {
     display: none;
 }
 
-.hide {
-    visibility: hidden;
-}
-
-#new-task-main-info {
+#new-task-main-info,
+#new-task-additional-info,
+#edit-task-form > div {
     display: flex;
     flex-direction: column;
-    gap: var(--sidebar-gap);
+    gap: var(--sidebar-elements-gap);
+}
+
+#new-task-title,
+#new-task-description,
+#new-task-date,
+#new-task-priority,
+#new-task-project,
+#edit-task-name,
+#edit-task-description,
+#edit-task-date,
+#edit-task-priority,
+#edit-task-project {
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid black;
 }
 
 dialog {
@@ -152,4 +281,19 @@ dialog {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+#edit-task-form {
+    padding: 30px;
+}
+
+#edit-task-form > div:last-child {
+    display: flex;
+    flex-direction: row;
+}
+
+.btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 4px;
 }

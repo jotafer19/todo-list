@@ -1,8 +1,10 @@
 import editIcon from "./images/edit_icon.svg";
 import deleteIcon from "./images/delete_icon.svg";
+import { changeTaskDisplayTitle } from "./DOM-functions";
 
 function loadPage(inbox) {
     document.querySelector("#inbox").classList.toggle("active");
+    changeTaskDisplayTitle("Inbox")
     inbox.showTasks.forEach(task => {
         document.querySelector("#tasks-display").appendChild(createTaskDiv(task));
     })
@@ -11,8 +13,11 @@ function loadPage(inbox) {
 function createTaskDiv(task) {
     const taskDiv = document.createElement("div");
     taskDiv.classList.add("task");
-    taskDiv.setAttribute("id", task.id)
-    taskDiv.setAttribute("data-date", task.date)
+    taskDiv.setAttribute("id", task.id);
+    taskDiv.setAttribute("data-date", task.date);
+
+    const unnamedContainer = document.createElement("div");
+    unnamedContainer.classList.add("task-info");
 
     const taskMainInfo = document.createElement("div");
     taskMainInfo.classList.add("task-main");
@@ -24,6 +29,8 @@ function createTaskDiv(task) {
     const taskMainRight = document.createElement("div");
     taskMainRight.classList.add("task-main-right");
     taskMainRight.textContent = task.date;
+
+    unnamedContainer.append(taskMainLeft, taskMainRight);
 
     const iconsContainer = document.createElement("div");
     iconsContainer.classList.add("task-icons");
@@ -38,7 +45,7 @@ function createTaskDiv(task) {
 
     iconsContainer.append(myEditIcon, myDeleteIcon);
 
-    taskMainInfo.append(taskMainLeft, taskMainRight, iconsContainer);
+    taskMainInfo.append(unnamedContainer, iconsContainer);
 
     const taskAdditionalInfo = document.createElement("div");
     taskAdditionalInfo.classList.add("task-additional");

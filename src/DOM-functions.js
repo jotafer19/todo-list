@@ -75,6 +75,11 @@ function getEditingTask(inbox) {
     }
 }
 
+function changeTaskDisplayTitle(title) {
+    const taskDisplayHeader = document.querySelector("#task-header > h3");
+    taskDisplayHeader.textContent = title;
+}
+
 export {
     deleteCurrentTasks,
     addNewTask,
@@ -84,4 +89,5 @@ export {
     resetNewTaskForm,
     getStorageProject,
     getEditingTask,
+    changeTaskDisplayTitle,
 }

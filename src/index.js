@@ -4,7 +4,7 @@ import Project from "./create-project";
 import GroupProjects from "./group-projects";
 import { format } from 'date-fns'
 import { loadPage, createProjectDiv, createTaskDiv } from "./create-display";
-import { deleteCurrentTasks, addNewTask, createNewTask, createProjectOption, getTaskProject, resetNewTaskForm, getStorageProject, getEditingTask } from "./DOM-functions";
+import { deleteCurrentTasks, addNewTask, createNewTask, createProjectOption, getTaskProject, resetNewTaskForm, getStorageProject, getEditingTask, changeTaskDisplayTitle } from "./DOM-functions";
 
 
 const project1 = new Project("Project 1");
@@ -14,7 +14,6 @@ const task2 = new Task("play dice throne", "with Dr Strange", "2023-10-21", "Med
 console.log(task1)
 
 const inbox = new GroupProjects();
-
 
 project1.addTask(task1)
 project2.addTask(task2)
@@ -28,6 +27,7 @@ loadPage(inbox);
 const inboxButton = document.querySelector("#inbox");
 inboxButton.addEventListener("click", () => {
     deleteCurrentTasks();
+    changeTaskDisplayTitle("Inbox");
     if (document.querySelector("#today-tasks").classList.contains("active") ||
     document.querySelector("#week-tasks").classList.contains("active")) {
         document.querySelector("#new-task-add").classList.toggle("collapse");
@@ -48,18 +48,6 @@ projectsDisplay.appendChild(createProjectDiv(project2))
 projectsDisplay.addEventListener("click", (event) => {
     if (event.target.classList.contains("project") || event.target.classList.contains("project-name-container") || 
     event.target.classList.contains("edit-icon")) {
-        if (document.querySelector("#inbox").classList.contains("active")) {
-            document.querySelector("#inbox").classList.toggle("active");
-        }
-        if (document.querySelector("#today-tasks").classList.contains("active") ||
-        document.querySelector("#week-tasks").classList.contains("active")) {
-            document.querySelector("#new-task-add").classList.toggle("collapse");
-        }
-        projectsDisplay.childNodes.forEach(child => {
-            if (child !== event.target && child.classList.contains("active")) {
-                child.classList.toggle("active");
-            }
-        })
         let projectSelection;
         if (event.target.classList.contains("project")) {
             projectSelection = event.target;
@@ -68,11 +56,24 @@ projectsDisplay.addEventListener("click", (event) => {
         } else if (event.target.classList.contains("edit-icon")) {
             projectSelection = event.target.parentElement.parentElement;
         }
+
+
+        if (document.querySelector("#today-tasks").classList.contains("active") ||
+        document.querySelector("#week-tasks").classList.contains("active")) {
+            document.querySelector("#new-task-add").classList.toggle("collapse");
+        }
+
+        if (document.querySelector(".active") && !projectSelection.classList.contains("active")) {
+            document.querySelector(".active").classList.toggle("active");
+        }
+
     
         for (let project of inbox.showAllProjects) {
             if (projectSelection.dataset.id === project.id && !projectSelection.classList.contains("active")) {
                 projectSelection.classList.toggle("active");
                 deleteCurrentTasks();
+                changeTaskDisplayTitle(project.name + " tasks")
+
                 project.showProject.forEach(task => {
                     const changeTask = createTaskDiv(task);
                     tasksDisplay.appendChild(changeTask)
@@ -104,8 +105,12 @@ projectsDisplay.addEventListener("click", event => {
 
 // EDIT PROJECT
 projectsDisplay.addEventListener("click", event => {
-    if (event.target.classList.contains("edit-icon")) {
-        const targetedProject = event.target.parentElement.parentElement;
+    if (event.target.classList.contains("edit-icon") && !document.querySelector(".editing-project")) {
+        if (!document.querySelector("#new-project-form").classList.contains("collapse")) {
+            document.querySelector("#new-project-form").classList.toggle("collapse");
+            document.querySelector("#new-project").classList.toggle("collapse");
+        }
+        const targetedProject = event.target.parentElement.parentElement;;
         for (let project of inbox.showAllProjects) {
             if (project.id === targetedProject.getAttribute("data-id")) {
                 const editProjectForm = document.querySelector("#edit-project-form");
@@ -124,10 +129,10 @@ editProjectSubmitButton.addEventListener("click", event => {
     event.preventDefault();
     const editProjectForm = document.querySelector("#edit-project-form");
     const editingProject = document.querySelector(".editing-project");
-    console.log(editingProject)
     for (let project of inbox.showAllProjects) {
         if (project.id === editingProject.dataset.id) {
             project.name = document.querySelector("#edit-project-name").value;
+            changeTaskDisplayTitle(project.name + " tasks")
             editingProject.firstChild.textContent = project.name;
             editProjectForm.classList.toggle("collapse")
             editingProject.classList.toggle("collapse")
@@ -148,9 +153,22 @@ editProjectSubmitButton.addEventListener("click", event => {
     }
 })
 
+const cancelEditProject = document.querySelector("#edit-project-cancel");
+cancelEditProject.addEventListener("click", event => {
+    event.preventDefault();
+    document.querySelector("#edit-project-form").classList.toggle("collapse");
+    document.querySelector(".editing-project").classList.toggle("collapse");
+    document.querySelector(".editing-project").classList.toggle("editing-project");
+})
+
 // NEW PROJECT BUTTON
 const newProjectButton = document.querySelector("#new-project");
 newProjectButton.addEventListener("click", () => {
+    if (!document.querySelector("#edit-project-form").classList.contains("collapse")) {
+        document.querySelector("#edit-project-form").classList.toggle("collapse");
+        document.querySelector(".editing-project").classList.toggle("collapse");
+        document.querySelector(".editing-project").classList.toggle("editing-project");
+    }
     newProjectButton.classList.toggle("collapse");
     newProjectButton.nextElementSibling.classList.toggle("collapse");
 })
@@ -164,8 +182,8 @@ for (let project of inbox.showAllProjects) {
 }
 
 // SUBMIT NEW PROJECT BUTTON
-const submitNewProjectButton = document.querySelector("#new-project-submit");
-submitNewProjectButton.addEventListener("click", (event) => {
+const submitNewProjectButton = document.querySelector("#new-project-form");
+submitNewProjectButton.addEventListener("submit", (event) => {
     event.preventDefault();
     const newProjectName = document.querySelector("#new-project-name").value;
     const newProject = new Project(newProjectName);
@@ -182,14 +200,27 @@ submitNewProjectButton.addEventListener("click", (event) => {
     document.querySelector("#edit-task-project").appendChild(newProjectOption)
 })
 
+const cancelNewProject = document.querySelector("#new-project-cancel");
+cancelNewProject.addEventListener("click", event => {
+    event.preventDefault();
+    document.querySelector("#new-project-form").classList.toggle("collapse");
+    document.querySelector("#new-project-form").reset();
+    document.querySelector("#new-project").classList.toggle("collapse");
+})
+
 // TASK
 const tasksDisplay = document.querySelector("#tasks-display");
 tasksDisplay.addEventListener("click", event => {
+    console.log(event.target)
     if (event.target.className === "task-main") {
         event.target.nextElementSibling.classList.toggle("collapse");
     }
     if (event.target.className === "task-main-left" || event.target.className === "task-main-right") {
-        event.target.parentElement.nextElementSibling.classList.toggle("collapse");
+        event.target.parentElement.parentElement.nextElementSibling.classList.toggle("collapse");
+    }
+
+    if (event.target.className === "task-info") {
+        event.target.parentElement.nextElementSibling.classList.toggle("collapse")
     }
 })
 
@@ -200,8 +231,8 @@ newTaskButton.addEventListener("click", () => {
 })
 
 // SUBMIT NEW TASK BUTTON
-const submitNewTaskButton = document.querySelector("#new-task-submit");
-submitNewTaskButton.addEventListener("click", (event) => {
+const submitNewTaskButton = document.querySelector("#new-task-form");
+submitNewTaskButton.addEventListener("submit", (event) => {
     event.preventDefault();
     const newTask = createNewTask();
     const newTaskDisplay = createTaskDiv(newTask);
@@ -221,6 +252,11 @@ submitNewTaskButton.addEventListener("click", (event) => {
             })
         }
     }
+    resetNewTaskForm();
+})
+
+const cancelNewTaskButton = document.querySelector("#new-task-cancel");
+cancelNewTaskButton.addEventListener("click", () => {
     resetNewTaskForm();
 })
 
@@ -299,17 +335,29 @@ editTaskSubmitButton.addEventListener("click", event => {
     document.querySelector("#edit-task-dialog").close();
 })
 
+const cancelEditTaskButton = document.querySelector("#edit-task-cancel");
+cancelEditTaskButton.addEventListener("click", event => {
+    event.preventDefault();
+    document.querySelector("#edit-task-dialog").close();
+})
+
 // TODAY TASKS
 const todayTasks = document.querySelector("#today-tasks");
 todayTasks.addEventListener("click", () => {
     if (!document.querySelector("#new-task-add").classList.contains("collapse")) {
         document.querySelector("#new-task-add").classList.toggle("collapse");
     }
+
+    if (!document.querySelector("#new-task-form").classList.contains("collapse")) {
+        document.querySelector("#new-task-form").classList.toggle("collapse");
+    }
+    
     if (!todayTasks.classList.contains("active")) {
         document.querySelector(".active").classList.toggle("active");
         todayTasks.classList.toggle("active");
     }
     deleteCurrentTasks();
+    changeTaskDisplayTitle("Today tasks");
     inbox.showTasks.forEach(task => {
         if (format(new Date(task.date), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd")) {
             tasksDisplay.appendChild(createTaskDiv(task));
@@ -323,11 +371,16 @@ thisWeekTasks.addEventListener("click", () => {
     if (!document.querySelector("#new-task-add").classList.contains("collapse")) {
         document.querySelector("#new-task-add").classList.toggle("collapse");
     }
-    if (todayTasks.classList.contains("active")) {
+
+    if (!document.querySelector("#new-task-form").classList.contains("collapse")) {
+        document.querySelector("#new-task-form").classList.toggle("collapse");
+    }
+    if (!thisWeekTasks.classList.contains("active")) {
         document.querySelector(".active").classList.toggle("active");
         thisWeekTasks.classList.toggle("active");
     }
     deleteCurrentTasks();
+    changeTaskDisplayTitle("This week tasks");
     const today = new Date();
     today.setHours(0, 0, 0, 0)
     const nextWeek = new Date();
