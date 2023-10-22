@@ -1,5 +1,4 @@
 import Task from "./create-task";
-import { createTaskDiv } from "./create-display";
 
 function deleteCurrentTasks() {
     const currentTasks = document.querySelectorAll(".task");

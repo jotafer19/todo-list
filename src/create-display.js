@@ -1,5 +1,5 @@
-import editIcon from "./images/edit_icon.svg";
-import deleteIcon from "./images/delete_icon.svg";
+import editIcon from "./assets/images/edit_icon.svg";
+import deleteIcon from "./assets/images/delete_icon.svg";
 import { changeTaskDisplayTitle } from "./DOM-functions";
 
 function loadPage(inbox) {
@@ -21,6 +21,10 @@ function createTaskDiv(task) {
 
     const taskMainInfo = document.createElement("div");
     taskMainInfo.classList.add("task-main");
+
+    const checkTask = document.createElement("input");
+    checkTask.classList.add("task-done");
+    checkTask.setAttribute("type", "checkbox");
 
     const taskMainLeft = document.createElement("div");
     taskMainLeft.classList.add("task-main-left");
@@ -52,7 +56,7 @@ function createTaskDiv(task) {
     taskAdditionalInfo.classList.add("collapse");
     taskAdditionalInfo.textContent = task.description;
     
-    taskDiv.append(taskMainInfo, taskAdditionalInfo);
+    taskDiv.append(checkTask, taskMainInfo, taskAdditionalInfo);
 
     return taskDiv;
 }

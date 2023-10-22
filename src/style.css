@@ -1,8 +1,20 @@
+@font-face {
+    font-family: "Raleway Medium";
+    src: url("./assets/fonts/Raleway-Medium.ttf");
+}
+
+@font-face {
+    font-family: "Raleway-Bold";
+    src: url("./assets/fonts/Raleway-Bold.ttf");
+}
+
 :root {
     --general-padding: 30px;
     --sidebar-containers-gap: 24px;
     --sidebar-elements-gap: 12px;
     --task-padding: 6px 16px;
+    --sidebar-background-color: #a7f3d0;
+    --hover-green: #34d399;
 }
 
 * {
@@ -13,22 +25,32 @@
 
 body {
     position: relative;
+    font-family: "Raleway Medium";
 }
 
 /* ------- HEADER ------- */
 
 #header {
-    min-height: 10svh;
-    background-color: antiquewhite;
     display: flex;
+    justify-content: flex-start;
     justify-content: center;
     align-items: center;
+}
+
+h1 {
+    font-size: 2rem   ;
+}
+
+h1,
+h2,
+h3 {
+    font-family: "Raleway-Bold";
 }
 
 /* ------- MAIN ------- */
 
 #main-container {
-    min-height: 90svh;
+    min-height: 100svh;
     display: flex;
 }
 
@@ -38,11 +60,11 @@ body {
     min-width: 250px;
     max-width: 300px;
     padding: var(--general-padding);
-    background-color: aliceblue;
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: var(--sidebar-containers-gap);
+    background-color: var(--sidebar-background-color);
 }
 
 #home-container,
@@ -80,6 +102,7 @@ h2 {
     padding: 8px 12px;
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
 #new-project:hover,
@@ -87,17 +110,13 @@ h2 {
 #inbox:hover,
 #today-tasks:hover,
 #week-tasks:hover {
-    background-color: #4a4a4a50;
+    background-color: var(--hover-green);
     padding: 8px 12px;
     border-radius: 4px;
 }
 
-.project > .project-icons {
-    display: none;
-}
-
-.project:hover > .project-icons {
-    display: inline-block;
+.task > .task-main > .task-icons {
+    visibility: hidden;
 }
 
 #new-project.collapse,
@@ -133,6 +152,14 @@ h2 {
     border: 1px solid black;
 }
 
+.project > .project-icons {
+    display: none;
+}
+
+.project:hover > .project-icons {
+    display: flex;
+}
+
 /* ------- TASK DISPLAY ------- */
 
 #tasks-container {
@@ -160,9 +187,9 @@ h2 {
 }
 
 .task {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    gap: 8px;
 }
 
 .task-main {
@@ -186,11 +213,9 @@ h2 {
     text-align: right;
 }
 
-.task-icons,
-.project:hover > .project-icons {
+.task:hover > .task-main > .task-icons{
+    visibility: visible;
     display: flex;
-    gap: 4px;
-
 }
 
 .task-icon,
@@ -200,6 +225,7 @@ h2 {
 }
 
 .task-additional {
+    grid-column: 2 / 3;
     padding: var(--task-padding);
     border: 1px solid #d2d2d2;
     border-radius: 4px;
@@ -216,14 +242,13 @@ h2 {
 /* ------- NEW TASK ------- */
 
 #new-task-container {
-    padding: 6px 30px;
     display: flex;
     flex-direction: column;
 }
 
 #new-task-add,
 #new-task-add:hover {
-    align-self: flex-end;
+    align-self: flex-start;
     padding: 6px 30px;
     display: flex;
     justify-content: flex-start;
@@ -232,7 +257,7 @@ h2 {
 }
 
 #new-task-add:hover {
-    background-color: #4a4a4a50;    
+    background-color: var(--hover-green);    
     border-radius: 4px;
 }
 
@@ -241,9 +266,12 @@ h2 {
     display: none;
 }
 
+#new-task-form {
+    padding: 6px 30px;
+}
+
 #new-task-form,
 #edit-task-form {
-    padding: 0;
     display: grid;
     grid-template-columns: 1fr min-content;
     gap: 16px;

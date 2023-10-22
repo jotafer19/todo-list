@@ -260,6 +260,20 @@ cancelNewTaskButton.addEventListener("click", () => {
     resetNewTaskForm();
 })
 
+// TASK DONE
+tasksDisplay.addEventListener("click", event => {
+    if (event.target.className === "task-done") {
+        const targetedTask = event.target.parentElement;
+        for (let task of inbox.showTasks) {
+            if (task.id === targetedTask.getAttribute("id")) {
+                inbox.deleteTask(task);
+                targetedTask.remove();
+                console.log("Task done")
+            }
+        }
+    }
+})
+
 // DELETE TASK
 tasksDisplay.addEventListener("click", event => {
     if (event.target.classList.contains("delete-icon")) {
