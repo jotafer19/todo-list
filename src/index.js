@@ -195,9 +195,10 @@ submitNewProjectButton.addEventListener("submit", (event) => {
 
     createProjectOption(newProject);
     const newProjectOption = document.createElement("option");
-    newProjectOption.setAttribute("value", newProject.name);
+    newProjectOption.setAttribute("value", newProject.id);
     newProjectOption.textContent = newProject.name;
-    document.querySelector("#edit-task-project").appendChild(newProjectOption)
+    document.querySelector("#edit-task-project").appendChild(newProjectOption);
+    console.log(inbox.showAllProjects)
 })
 
 const cancelNewProject = document.querySelector("#new-project-cancel");
@@ -356,6 +357,7 @@ editTaskSubmitButton.addEventListener("click", event => {
 const cancelEditTaskButton = document.querySelector("#edit-task-cancel");
 cancelEditTaskButton.addEventListener("click", event => {
     event.preventDefault();
+    document.querySelector(".editing-task").classList.toggle("editing-task");
     document.querySelector("#edit-task-dialog").close();
 })
 
