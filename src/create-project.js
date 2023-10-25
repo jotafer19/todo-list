@@ -24,7 +24,7 @@ export default class Project {
     }
 
     set name(value) {
-        return this._name = value;
+        this._name = value;
     }
 
     get id() {

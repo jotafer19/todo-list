@@ -2,35 +2,24 @@ import "./style.css"
 import Task from "./create-task";
 import Project from "./create-project";
 import GroupProjects from "./group-projects";
-import { format } from 'date-fns'
+import { format, getOverlappingDaysInIntervals } from 'date-fns'
 import { loadPage, createProjectDiv, createTaskDiv } from "./create-display";
 import { deleteCurrentTasks, addNewTask, createNewTask, createProjectOption, getTaskProject, resetNewTaskForm, getStorageProject, getEditingTask, changeTaskDisplayTitle } from "./DOM-functions";
 
-
-const project1 = new Project("Project 1");
-const project2 = new Project("Project 2");
-const task1 = new Task("gym", "in the morning", "2023-11-02", "High", project1.id);
-const task2 = new Task("play dice throne", "with Dr Strange", "2023-10-21", "Medium", project2.id);
-console.log(task1)
-
-const inbox = new GroupProjects();
-
-project1.addTask(task1)
-project2.addTask(task2)
-
-inbox.addProject(project1)
-inbox.addProject(project2)
-
-loadPage(inbox);
+const inbox = new GroupProjects("inbox");
+loadPage(inbox)
 
 // INBOX BUTTON
 const inboxButton = document.querySelector("#inbox");
 inboxButton.addEventListener("click", () => {
     deleteCurrentTasks();
     changeTaskDisplayTitle("Inbox");
-    if (document.querySelector("#today-tasks").classList.contains("active") ||
-    document.querySelector("#week-tasks").classList.contains("active")) {
+    if (inbox.showAllProjects.length === 0 && !document.querySelector("#new-task-add").classList.contains("collapse")) {
         document.querySelector("#new-task-add").classList.toggle("collapse");
+    }
+    if (document.querySelector("#today-tasks").classList.contains("active") && inbox.showAllProjects.length > 0 ||
+    document.querySelector("#week-tasks").classList.contains("active") && inbox.showAllProjects.length > 0) {
+        document.querySelector("#new-task-add").classList.toggle("collapse");     
     }
     if (!inboxButton.classList.contains("active")) {
         document.querySelector(".active").classList.toggle("active");
@@ -43,8 +32,6 @@ inboxButton.addEventListener("click", () => {
 
 // PROJECT
 const projectsDisplay = document.querySelector("#projects-display");
-projectsDisplay.appendChild(createProjectDiv(project1))
-projectsDisplay.appendChild(createProjectDiv(project2))
 projectsDisplay.addEventListener("click", (event) => {
     if (event.target.classList.contains("project") || event.target.classList.contains("project-name-container") || 
     event.target.classList.contains("edit-icon")) {
@@ -60,7 +47,9 @@ projectsDisplay.addEventListener("click", (event) => {
 
         if (document.querySelector("#today-tasks").classList.contains("active") ||
         document.querySelector("#week-tasks").classList.contains("active")) {
-            document.querySelector("#new-task-add").classList.toggle("collapse");
+            if (document.querySelector("#new-task-add").classList.contains("collapse")) {
+                document.querySelector("#new-task-add").classList.toggle("collapse");
+            }
         }
 
         if (document.querySelector(".active") && !projectSelection.classList.contains("active")) {
@@ -91,13 +80,52 @@ projectsDisplay.addEventListener("click", event => {
             if (project.id === targetedProject.dataset.id) {
                 inbox.deleteProject(project);
                 targetedProject.remove();
-                console.log(inbox.showAllProjects)
-                console.log(inbox.showTasks)
                 deleteCurrentTasks();
-                inboxButton.classList.toggle("active");
+                const newTaskProjectOptions = document.querySelectorAll("#new-task-project > option");
+                newTaskProjectOptions.forEach(option => {
+                    if (option.value === project.id) {
+                        option.remove();
+                    }
+                })
+                const editTaskProjectOptions = document.querySelectorAll("#edit-task-project > option");
+                editTaskProjectOptions.forEach(option => {
+                    if (option.value === project.id) {
+                        option.remove();
+                    }
+                })
+                if (!document.querySelector(".active")) {
+                    inboxButton.classList.toggle("active");
+                }
                 inbox.showTasks.forEach(task => {
                     tasksDisplay.append(createTaskDiv(task));
                 })
+
+                if (!document.querySelector("#new-task-form").classList.contains("collapse") && inbox.showAllProjects.length === 0) {
+                    document.querySelector("#new-task-form").classList.toggle("collapse")
+                    document.querySelector("#inbox").classList.toggle("active")
+                }
+
+                if (!inbox.showAllProjects.length) {
+                    deleteCurrentTasks();
+                    changeTaskDisplayTitle("Inbox");
+                    if (inbox.showAllProjects.length === 0 && !document.querySelector("#new-task-add").classList.contains("collapse")) {
+                        document.querySelector("#new-task-add").classList.toggle("collapse");
+                    }
+                    if (document.querySelector("#today-tasks").classList.contains("active") && inbox.showAllProjects.length > 0 ||
+                    document.querySelector("#week-tasks").classList.contains("active") && inbox.showAllProjects.length > 0) {
+                        document.querySelector("#new-task-add").classList.toggle("collapse");     
+                    }
+                    if (!inboxButton.classList.contains("active")) {
+                        document.querySelector(".active").classList.toggle("active");
+                        inboxButton.classList.toggle("active");
+                    }
+                    inbox.showTasks.forEach(task => {
+                        tasksDisplay.append(createTaskDiv(task));
+                    })  
+                }
+
+                
+                storeObjects()
             }
         }
     }
@@ -118,6 +146,9 @@ projectsDisplay.addEventListener("click", event => {
                 editProjectForm.classList.toggle("collapse")
                 targetedProject.classList.toggle("collapse")
                 targetedProject.classList.toggle("editing-project")
+                if (!document.querySelector("#new-task-add").classList.contains("collapse")) {
+                    document.querySelector("#new-task-add").classList.toggle("collapse")
+                }
                 projectsDisplay.insertBefore(editProjectForm, targetedProject)
             }
         }
@@ -149,6 +180,8 @@ editProjectSubmitButton.addEventListener("click", event => {
                     option.textContent = project.name
                 }
             })
+            document.querySelector("#new-task-add").classList.toggle("collapse")
+            storeObjects()
         }
     }
 })
@@ -171,15 +204,10 @@ newProjectButton.addEventListener("click", () => {
     }
     newProjectButton.classList.toggle("collapse");
     newProjectButton.nextElementSibling.classList.toggle("collapse");
+    if (!document.querySelector("#new-task-add").classList.contains("collapse")) {
+        document.querySelector("#new-task-add").classList.toggle("collapse")
+    }
 })
-
-for (let project of inbox.showAllProjects) {
-    createProjectOption(project)
-    const newProjectOption = document.createElement("option");
-    newProjectOption.setAttribute("value", project.id);
-    newProjectOption.textContent = project.name;
-    document.querySelector("#edit-task-project").appendChild(newProjectOption)
-}
 
 // SUBMIT NEW PROJECT BUTTON
 const submitNewProjectButton = document.querySelector("#new-project-form");
@@ -199,6 +227,10 @@ submitNewProjectButton.addEventListener("submit", (event) => {
     newProjectOption.textContent = newProject.name;
     document.querySelector("#edit-task-project").appendChild(newProjectOption);
     console.log(inbox.showAllProjects)
+    if (!document.querySelector("#today-tasks").classList.contains("active") || !document.querySelector("#week-tasks").classList.contains("active")) {
+        document.querySelector("#new-task-add").classList.toggle("collapse");
+    }
+    storeObjects()
 })
 
 const cancelNewProject = document.querySelector("#new-project-cancel");
@@ -240,7 +272,6 @@ submitNewTaskButton.addEventListener("submit", (event) => {
     selectedProject.addTask(newTask);
     if (document.querySelector(".active").dataset.id === selectedProject.id || 
     document.querySelector("#inbox").classList.contains("active")) {
-    // document.querySelector("#tasks-display").appendChild(newTaskDisplay);
         deleteCurrentTasks();
         if (document.querySelector("#inbox").classList.contains("active")) {
             inbox.showTasks.forEach(task => {
@@ -252,6 +283,7 @@ submitNewTaskButton.addEventListener("submit", (event) => {
             })
         }
     }
+    storeObjects()
     resetNewTaskForm();
 })
 
@@ -271,6 +303,7 @@ tasksDisplay.addEventListener("click", event => {
                 console.log("Task done")
             }
         }
+        storeObjects()
     }
 })
 
@@ -285,6 +318,7 @@ tasksDisplay.addEventListener("click", event => {
                 console.log("Task deleted")
             }
         }
+        storeObjects()
     }
 })
 
@@ -350,7 +384,7 @@ editTaskSubmitButton.addEventListener("click", event => {
             tasksDisplay.appendChild(createTaskDiv(task));
         })
     }
-
+    storeObjects()
     document.querySelector("#edit-task-dialog").close();
 })
 
@@ -412,3 +446,15 @@ thisWeekTasks.addEventListener("click", () => {
         }
     })
 })
+
+
+// STORAGE
+
+function storeObjects() {
+    localStorage.setItem("inbox", JSON.stringify(inbox));
+}
+
+function getStorage() {
+    console.log(JSON.parse(localStorage.getItem("inbox")))
+    return JSON.parse(localStorage.getItem("inbox"))
+}

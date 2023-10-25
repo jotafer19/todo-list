@@ -1,14 +1,125 @@
 import editIcon from "./assets/images/edit_icon.svg";
 import deleteIcon from "./assets/images/delete_icon.svg";
-import { changeTaskDisplayTitle } from "./DOM-functions";
+import { changeTaskDisplayTitle, createProjectOption } from "./DOM-functions";
+import Project from "./create-project";
 
 function loadPage(inbox) {
     document.querySelector("#inbox").classList.toggle("active");
     changeTaskDisplayTitle("Inbox")
-    inbox.showTasks.forEach(task => {
-        document.querySelector("#tasks-display").appendChild(createTaskDiv(task));
-    })
-}
+    if (localStorage.getItem("inbox")) {
+        const a = JSON.parse(localStorage.getItem("inbox"))
+        console.log(a._allProjects)
+        a._allProjects.forEach(project => {
+            console.log(project)
+            Object.defineProperty(project, "name", {
+                get: function() {
+                    return this._name;  
+                },
+                set: function(value) {
+                    this._name = value;
+                }
+            })
+            Object.defineProperty(project, "id", {
+                get: function() {
+                    return this._id;  
+                }
+            })
+            Object.defineProperty(project, "showProject", {
+                get: function() {
+                    return this._project;  
+                }
+            })
+            Object.defineProperty(project, "showTasks", {
+                get: function() {
+                    const projectTasks = [];
+                    for (let task of this._project) {
+                        projectTasks.push(task);
+                    }
+                    return projectTasks;
+                }
+            })
+            Object.defineProperty(project, "updateProject", {
+                get: function() {
+                    this._project.sort(function compare(a, b) {
+                        const dateA = new Date(a.date);
+                        const dateB = new Date(b.date);
+                        return dateA - dateB;
+                    })
+                }
+            })
+            project.addTask = function(task) {
+                this._project.push(task);
+                this._project.sort(function compare(a, b) {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    return dateA - dateB;
+                })
+            }
+            project.deleteTask = function(task) {
+                this._project.splice(this._project.indexOf(task), 1);
+            }
+            inbox.addProject(project);
+            createProjectOption(project);
+            const newProjectOption = document.createElement("option");
+            newProjectOption.setAttribute("value", project.id);
+            newProjectOption.textContent = project.name;
+            document.querySelector("#edit-task-project").appendChild(newProjectOption);
+            document.querySelector("#projects-display").appendChild(createProjectDiv(project))
+            project.showProject.forEach(task => {
+                Object.defineProperty(task, "name", {
+                    get: function() {
+                        return this._name;  
+                    },
+                    set: function(value) {
+                        this._name = value;
+                    }
+                })
+                Object.defineProperty(task, "description", {
+                    get: function() {
+                        return this._description;  
+                    },
+                    set: function(value) {
+                        this._description = value;
+                    }
+                })
+                Object.defineProperty(task, "date", {
+                    get: function() {
+                        return this._date;  
+                    },
+                    set: function(value) {
+                        this._date = value;
+                    }
+                })
+                Object.defineProperty(task, "priority", {
+                    get: function() {
+                        return this._priority;  
+                    },
+                    set: function(value) {
+                        this._priority = value;
+                    }
+                })
+                Object.defineProperty(task, "project", {
+                    get: function() {
+                        return this._project;  
+                    },
+                    set: function(value) {
+                        this._project = value;
+                    }
+                })
+                Object.defineProperty(task, "id", {
+                    get: function() {
+                        return this._id;
+                    }
+                })
+                document.querySelector("#tasks-display").appendChild(createTaskDiv(task))
+
+            })
+        })
+    if (inbox.showAllProjects.length === 0) {
+        document.querySelector("#new-task-add").classList.toggle("collapse");
+    }
+    }
+} 
 
 function createTaskDiv(task) {
     const taskDiv = document.createElement("div");

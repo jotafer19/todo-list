@@ -19,7 +19,7 @@ export default class Task {
     }
 
     set name(value) {
-        return this._name = value;
+        this._name = value;
     }
 
     get description() {
@@ -27,7 +27,7 @@ export default class Task {
     }
 
     set description(value) {
-        return this._description = value;
+        this._description = value;
     }
 
     get date() {
@@ -35,7 +35,7 @@ export default class Task {
     }
 
     set date(value) {
-        return this._date = value;
+        this._date = value;
     }
 
     get priority() {
@@ -43,7 +43,7 @@ export default class Task {
     }
 
     set priority(value) {
-        return this._priority = value;
+        this._priority = value;
     }
 
     get project() {
@@ -51,6 +51,6 @@ export default class Task {
     }
 
     set project(value) {
-        return this._project = value;
+        this._project = value;
     }
 }
